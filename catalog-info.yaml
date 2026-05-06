@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: migration-intelligence-plugin
+  description: Backstage plugin for migration intelligence — manage and visualize application migrations
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - backstage-plugin
+    - konveyor
+    - migration
+spec:
+  type: backstage-plugin
+  lifecycle: experimental
+  owner: team-konveyor

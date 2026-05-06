@@ -1,0 +1,24 @@
+{
+  "name": "@konveyor/migration-intelligence-poc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "POC: Backstage plugin for migration intelligence",
+  "license": "Apache-2.0",
+  "workspaces": {
+    "packages": [
+      "plugins/*"
+    ]
+  },
+  "devDependencies": {
+    "typescript": "~5.4.0"
+  },
+  "scripts": {
+    "build": "yarn workspaces foreach -A run build",
+    "lint": "yarn workspaces foreach -A run lint",
+    "test": "yarn workspaces foreach -A run test"
+  },
+  "packageManager": "yarn@4.1.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

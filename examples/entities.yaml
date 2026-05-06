@@ -1,0 +1,160 @@
+---
+# Example entities for migration intelligence
+# Register this file in your app-config.yaml catalog locations
+
+# --- Applications under migration ---
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: coolstore-app
+  description: Classic Java EE e-commerce application — candidate for Quarkus migration
+  annotations:
+    konveyor.io/migration-status: in-progress
+    konveyor.io/source-technology: java-ee-7
+    konveyor.io/target-technology: quarkus-3
+    konveyor.io/repository: https://github.com/konveyor-ecosystem/coolstore
+    konveyor.io/complexity: high
+  tags:
+    - java
+    - migration-candidate
+    - java-ee
+  links:
+    - url: https://github.com/konveyor-ecosystem/coolstore
+      title: Source Repository
+spec:
+  type: service
+  lifecycle: production
+  owner: team-retail
+  system: retail-platform
+  dependsOn:
+    - resource:default/quarkus-3-target
+  providesApis:
+    - coolstore-api
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inventory-service
+  description: Spring Boot inventory microservice — migrating to Quarkus
+  annotations:
+    konveyor.io/migration-status: pending
+    konveyor.io/source-technology: spring-boot-2
+    konveyor.io/target-technology: quarkus-3
+    konveyor.io/repository: https://github.com/konveyor-ecosystem/inventory-service
+    konveyor.io/complexity: medium
+  tags:
+    - java
+    - migration-candidate
+    - spring-boot
+spec:
+  type: service
+  lifecycle: production
+  owner: team-platform
+  system: retail-platform
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: order-service
+  description: Java EE order processing service — migration completed
+  annotations:
+    konveyor.io/migration-status: completed
+    konveyor.io/source-technology: java-ee-8
+    konveyor.io/target-technology: quarkus-3
+    konveyor.io/repository: https://github.com/konveyor-ecosystem/order-service
+    konveyor.io/complexity: low
+    konveyor.io/migrated-at: "2026-04-28T14:30:00Z"
+  tags:
+    - java
+    - migrated
+    - quarkus
+spec:
+  type: service
+  lifecycle: production
+  owner: team-orders
+  system: retail-platform
+
+---
+# --- Migration Targets ---
+
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: quarkus-3-target
+  description: "Migration target: Quarkus 3.x runtime with Kubernetes-native deployment"
+  annotations:
+    konveyor.io/target-runtime: quarkus
+    konveyor.io/target-version: "3.8"
+    konveyor.io/deployment-model: kubernetes
+  tags:
+    - migration-target
+    - quarkus
+    - kubernetes
+spec:
+  type: migration-target
+  owner: team-platform
+  system: migration-infrastructure
+
+---
+# --- Migrator Agent ---
+
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: kai-migrator
+  description: "AI-powered migration agent (tackle2-addon-kai) — uses LLM + migration skills to transform applications"
+  annotations:
+    konveyor.io/migrator-type: ai-agent
+    konveyor.io/supported-sources: java-ee-7,java-ee-8,spring-boot-2,spring-boot-3
+    konveyor.io/supported-targets: quarkus-3
+    konveyor.io/skill: java-ee-to-quarkus
+    konveyor.io/addon-image: quay.io/konveyor/tackle2-addon-kai:latest
+  tags:
+    - migrator
+    - ai-agent
+    - konveyor
+  links:
+    - url: https://github.com/dymurray/tackle2-addon-kai
+      title: Addon Source
+spec:
+  type: grpc
+  lifecycle: experimental
+  owner: team-konveyor
+  system: migration-infrastructure
+  definition: |
+    syntax = "proto3";
+    service MigrationAgent {
+      rpc StartMigration(MigrationRequest) returns (MigrationResponse);
+      rpc GetStatus(StatusRequest) returns (StatusResponse);
+    }
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: manual-migrator
+  description: "Manual migration workflow — generates analysis report + guided refactoring steps"
+  annotations:
+    konveyor.io/migrator-type: manual
+    konveyor.io/supported-sources: java-ee-7,java-ee-8,spring-boot-2
+    konveyor.io/supported-targets: quarkus-3
+  tags:
+    - migrator
+    - manual
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: team-konveyor
+  system: migration-infrastructure
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: Manual Migration Workflow
+      version: 0.1.0
+    paths:
+      /analyze:
+        post:
+          summary: Analyze application for migration readiness
