@@ -20,21 +20,19 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 
-import { ApplicationMigration, Migrator } from '../MigrationDashboardPage/mockData';
+import {
+  ApplicationMigration,
+  Migrator,
+} from '../MigrationDashboardPage/mockData';
 
 const useStyles = makeStyles(theme => ({
-  formControl: {
-    margin: theme.spacing(2, 0),
-    minWidth: '100%',
-  },
+  formControl: { margin: theme.spacing(2, 0), minWidth: '100%' },
   summary: {
     padding: theme.spacing(2),
     marginTop: theme.spacing(2),
     backgroundColor: theme.palette.background.default,
   },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
+  chip: { margin: theme.spacing(0.5) },
 }));
 
 interface StartMigrationDialogProps {
@@ -111,12 +109,32 @@ export const StartMigrationDialog = ({
             {app && (
               <Paper variant="outlined" className={classes.summary}>
                 <Typography variant="subtitle2">{app.name}</Typography>
-                <Typography variant="body2" color="textSecondary">{app.description}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {app.description}
+                </Typography>
                 <Box mt={1}>
-                  <Chip label={app.sourceTechnology} size="small" className={classes.chip} />
-                  <Chip label="→" size="small" variant="outlined" className={classes.chip} />
-                  <Chip label={app.targetTechnology} size="small" color="primary" className={classes.chip} />
-                  <Chip label={`Complexity: ${app.complexity}`} size="small" className={classes.chip} />
+                  <Chip
+                    label={app.sourceTechnology}
+                    size="small"
+                    className={classes.chip}
+                  />
+                  <Chip
+                    label="→"
+                    size="small"
+                    variant="outlined"
+                    className={classes.chip}
+                  />
+                  <Chip
+                    label={app.targetTechnology}
+                    size="small"
+                    color="primary"
+                    className={classes.chip}
+                  />
+                  <Chip
+                    label={`Complexity: ${app.complexity}`}
+                    size="small"
+                    className={classes.chip}
+                  />
                 </Box>
               </Paper>
             )}
@@ -146,12 +164,27 @@ export const StartMigrationDialog = ({
             {migrator && (
               <Paper variant="outlined" className={classes.summary}>
                 <Typography variant="subtitle2">{migrator.name}</Typography>
-                <Typography variant="body2" color="textSecondary">{migrator.description}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {migrator.description}
+                </Typography>
                 <Box mt={1}>
-                  <Chip label={`Type: ${migrator.type}`} size="small" className={classes.chip} />
-                  <Chip label={`Skill: ${migrator.skill}`} size="small" className={classes.chip} />
+                  <Chip
+                    label={`Type: ${migrator.type}`}
+                    size="small"
+                    className={classes.chip}
+                  />
+                  <Chip
+                    label={`Skill: ${migrator.skill}`}
+                    size="small"
+                    className={classes.chip}
+                  />
                   {migrator.successRate && (
-                    <Chip label={`${migrator.successRate}% success`} size="small" color="primary" className={classes.chip} />
+                    <Chip
+                      label={`${migrator.successRate}% success`}
+                      size="small"
+                      color="primary"
+                      className={classes.chip}
+                    />
                   )}
                 </Box>
               </Paper>
@@ -162,22 +195,38 @@ export const StartMigrationDialog = ({
       case 2:
         return submitted ? (
           <Alert severity="success">
-            Migration started! {app?.name} is now being migrated using {migrator?.name}.
+            Migration started! {app?.name} is now being migrated using{' '}
+            {migrator?.name}.
           </Alert>
         ) : (
           <Box>
-            <Typography variant="body1" gutterBottom>Confirm migration:</Typography>
+            <Typography variant="body1" gutterBottom>
+              Confirm migration:
+            </Typography>
             <Paper variant="outlined" className={classes.summary}>
-              <Typography variant="body2"><strong>App:</strong> {app?.name}</Typography>
-              <Typography variant="body2"><strong>From:</strong> {app?.sourceTechnology}</Typography>
-              <Typography variant="body2"><strong>To:</strong> {app?.targetTechnology}</Typography>
-              <Typography variant="body2"><strong>Migrator:</strong> {migrator?.name} ({migrator?.type})</Typography>
-              <Typography variant="body2"><strong>Skill:</strong> {migrator?.skill}</Typography>
-              <Typography variant="body2"><strong>Est:</strong> {migrator?.avgDuration}</Typography>
+              <Typography variant="body2">
+                <strong>App:</strong> {app?.name}
+              </Typography>
+              <Typography variant="body2">
+                <strong>From:</strong> {app?.sourceTechnology}
+              </Typography>
+              <Typography variant="body2">
+                <strong>To:</strong> {app?.targetTechnology}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Migrator:</strong> {migrator?.name} ({migrator?.type})
+              </Typography>
+              <Typography variant="body2">
+                <strong>Skill:</strong> {migrator?.skill}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Est:</strong> {migrator?.avgDuration}
+              </Typography>
               <Box mt={1}>
                 <Alert severity="info">
-                  This will create a TaskGroup in Konveyor Hub and dispatch the addon
-                  to process the migration. A new branch will be created with migrated code.
+                  This will create a TaskGroup in Konveyor Hub and dispatch the
+                  addon to process the migration. A new branch will be created
+                  with migrated code.
                 </Alert>
               </Box>
             </Paper>
@@ -195,16 +244,25 @@ export const StartMigrationDialog = ({
       <DialogContent>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(label => (
-            <Step key={label}><StepLabel>{label}</StepLabel></Step>
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
           ))}
         </Stepper>
         <Box mt={2}>{renderStep()}</Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        {activeStep > 0 && !submitted && <Button onClick={handleBack}>Back</Button>}
+        {activeStep > 0 && !submitted && (
+          <Button onClick={handleBack}>Back</Button>
+        )}
         {!submitted && (
-          <Button variant="contained" color="primary" onClick={handleNext} disabled={!canProceed()}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleNext}
+            disabled={!canProceed()}
+          >
             {activeStep === steps.length - 1 ? 'Start Migration' : 'Next'}
           </Button>
         )}

@@ -1,6 +1,6 @@
 /**
  * Mock data for the migration intelligence dashboard.
- * In production this would come from a backend plugin talking to Konveyor Hub.
+ * In production this comes from a backend plugin talking to Konveyor Hub.
  */
 
 export type MigrationStatus =
@@ -116,9 +116,15 @@ export const mockMigrators: Migrator[] = [
   {
     id: 'migrator-1',
     name: 'kai-migrator',
-    description: 'AI-powered migration agent — LLM + migration skills (tackle2-addon-kai)',
+    description:
+      'AI-powered migration agent — LLM + migration skills (tackle2-addon-kai)',
     type: 'ai-agent',
-    supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.5', 'Spring Boot 2.7'],
+    supportedSources: [
+      'Java EE 7',
+      'Java EE 8',
+      'Spring Boot 2.5',
+      'Spring Boot 2.7',
+    ],
     supportedTargets: ['Quarkus 3.8'],
     skill: 'java-ee-to-quarkus',
     status: 'available',
@@ -128,9 +134,15 @@ export const mockMigrators: Migrator[] = [
   {
     id: 'migrator-2',
     name: 'manual-workflow',
-    description: 'Guided manual migration — analysis report + step-by-step refactoring',
+    description:
+      'Guided manual migration — analysis report + step-by-step refactoring',
     type: 'manual',
-    supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.5', 'Spring Boot 2.7'],
+    supportedSources: [
+      'Java EE 7',
+      'Java EE 8',
+      'Spring Boot 2.5',
+      'Spring Boot 2.7',
+    ],
     supportedTargets: ['Quarkus 3.8'],
     skill: 'manual-migration-guide',
     status: 'available',
@@ -140,7 +152,8 @@ export const mockMigrators: Migrator[] = [
   {
     id: 'migrator-3',
     name: 'hybrid-assist',
-    description: 'AI does heavy lifting, human reviews each transformation before applying',
+    description:
+      'AI does heavy lifting, human reviews each transformation before applying',
     type: 'hybrid',
     supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.7'],
     supportedTargets: ['Quarkus 3.8'],

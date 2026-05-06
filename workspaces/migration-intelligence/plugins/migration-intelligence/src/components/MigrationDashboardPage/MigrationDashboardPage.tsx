@@ -46,38 +46,18 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
-  progressBar: {
-    height: 8,
-    borderRadius: 4,
-  },
-  statsGrid: {
-    marginBottom: theme.spacing(3),
-  },
-  statCard: {
-    textAlign: 'center',
-    padding: theme.spacing(2),
-  },
+  progressBar: { height: 8, borderRadius: 4 },
+  statsGrid: { marginBottom: theme.spacing(3) },
+  statCard: { textAlign: 'center', padding: theme.spacing(2) },
   statNumber: {
     fontSize: '2rem',
     fontWeight: 700,
     color: theme.palette.primary.main,
   },
-  statLabel: {
-    color: theme.palette.text.secondary,
-    fontSize: '0.875rem',
-  },
-  complexityHigh: {
-    backgroundColor: '#ffebee',
-    color: '#c62828',
-  },
-  complexityMedium: {
-    backgroundColor: '#fff3e0',
-    color: '#e65100',
-  },
-  complexityLow: {
-    backgroundColor: '#e8f5e9',
-    color: '#2e7d32',
-  },
+  statLabel: { color: theme.palette.text.secondary, fontSize: '0.875rem' },
+  complexityHigh: { backgroundColor: '#ffebee', color: '#c62828' },
+  complexityMedium: { backgroundColor: '#fff3e0', color: '#e65100' },
+  complexityLow: { backgroundColor: '#e8f5e9', color: '#2e7d32' },
 }));
 
 function StatusIndicator({ status }: { status: MigrationStatus }) {
@@ -98,8 +78,12 @@ function StatusIndicator({ status }: { status: MigrationStatus }) {
 function DashboardStats() {
   const classes = useStyles();
   const total = mockApplications.length;
-  const completed = mockApplications.filter(a => a.status === 'completed').length;
-  const inProgress = mockApplications.filter(a => a.status === 'in-progress').length;
+  const completed = mockApplications.filter(
+    a => a.status === 'completed',
+  ).length;
+  const inProgress = mockApplications.filter(
+    a => a.status === 'in-progress',
+  ).length;
   const pending = mockApplications.filter(a => a.status === 'pending').length;
   const failed = mockApplications.filter(a => a.status === 'failed').length;
 
@@ -128,13 +112,11 @@ function DashboardStats() {
 
 function MigratorCard({ migrator }: { migrator: Migrator }) {
   const classes = useStyles();
-
   const typeIcon = {
     'ai-agent': <CloudIcon fontSize="small" />,
     manual: <BuildIcon fontSize="small" />,
     hybrid: <AssessmentIcon fontSize="small" />,
   };
-
   const statusColor = {
     available: 'primary' as const,
     busy: 'default' as const,
@@ -154,12 +136,21 @@ function MigratorCard({ migrator }: { migrator: Migrator }) {
           {migrator.description}
         </Typography>
         <Box display="flex" flexWrap="wrap" mb={1} style={{ gap: 4 }}>
-          <Chip label={migrator.type} size="small" color={statusColor[migrator.status]} />
-          <Chip label={`Skill: ${migrator.skill}`} size="small" variant="outlined" />
+          <Chip
+            label={migrator.type}
+            size="small"
+            color={statusColor[migrator.status]}
+          />
+          <Chip
+            label={`Skill: ${migrator.skill}`}
+            size="small"
+            variant="outlined"
+          />
         </Box>
         {migrator.successRate && (
           <Typography variant="caption" color="textSecondary">
-            Success rate: {migrator.successRate}% · Duration: {migrator.avgDuration}
+            Success rate: {migrator.successRate}% · Duration:{' '}
+            {migrator.avgDuration}
           </Typography>
         )}
       </CardContent>
@@ -182,7 +173,7 @@ export const MigrationDashboardPage = () => {
     {
       title: 'Application',
       field: 'name',
-      render: (row) => (
+      render: row => (
         <Box>
           <Typography variant="body1" style={{ fontWeight: 600 }}>
             {row.name}
@@ -196,17 +187,21 @@ export const MigrationDashboardPage = () => {
     {
       title: 'Source',
       field: 'sourceTechnology',
-      render: (row) => <Chip label={row.sourceTechnology} size="small" variant="outlined" />,
+      render: row => (
+        <Chip label={row.sourceTechnology} size="small" variant="outlined" />
+      ),
     },
     {
       title: 'Target',
       field: 'targetTechnology',
-      render: (row) => <Chip label={row.targetTechnology} size="small" color="primary" />,
+      render: row => (
+        <Chip label={row.targetTechnology} size="small" color="primary" />
+      ),
     },
     {
       title: 'Complexity',
       field: 'complexity',
-      render: (row) => (
+      render: row => (
         <Chip
           label={row.complexity}
           size="small"
@@ -214,8 +209,8 @@ export const MigrationDashboardPage = () => {
             row.complexity === 'high'
               ? classes.complexityHigh
               : row.complexity === 'medium'
-              ? classes.complexityMedium
-              : classes.complexityLow
+                ? classes.complexityMedium
+                : classes.complexityLow
           }
         />
       ),
@@ -223,7 +218,7 @@ export const MigrationDashboardPage = () => {
     {
       title: 'Status',
       field: 'status',
-      render: (row) => (
+      render: row => (
         <Box>
           <StatusIndicator status={row.status} />
           {row.progress !== undefined && row.status === 'in-progress' && (
@@ -241,19 +236,21 @@ export const MigrationDashboardPage = () => {
     },
     {
       title: 'Issues',
-      render: (row) =>
+      render: row =>
         row.issuesFound ? (
           <Typography variant="body2">
             {row.issuesResolved}/{row.issuesFound} resolved
           </Typography>
         ) : (
-          <Typography variant="body2" color="textSecondary">—</Typography>
+          <Typography variant="body2" color="textSecondary">
+            —
+          </Typography>
         ),
     },
     {
       title: 'Updated',
       field: 'lastUpdated',
-      render: (row) => (
+      render: row => (
         <Typography variant="body2">
           {new Date(row.lastUpdated).toLocaleDateString('en-US', {
             month: 'short',
@@ -291,16 +288,15 @@ export const MigrationDashboardPage = () => {
 
         <DashboardStats />
 
-        <InfoCard title="Applications" subheader="Track migration progress across your portfolio">
+        <InfoCard
+          title="Applications"
+          subheader="Track migration progress across your portfolio"
+        >
           <Table
             columns={columns}
             data={mockApplications}
             title=""
-            options={{
-              search: true,
-              paging: false,
-              padding: 'dense',
-            }}
+            options={{ search: true, paging: false, padding: 'dense' }}
           />
         </InfoCard>
 
