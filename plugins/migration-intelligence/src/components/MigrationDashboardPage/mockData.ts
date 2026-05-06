@@ -1,14 +1,13 @@
 /**
- * Mock data representing applications under migration.
- * In production, this would come from the Konveyor Hub API via a backend plugin.
+ * Mock data for the migration intelligence dashboard.
+ * In production this would come from a backend plugin talking to Konveyor Hub.
  */
 
 export type MigrationStatus =
   | 'pending'
   | 'in-progress'
   | 'completed'
-  | 'failed'
-  | 'cancelled';
+  | 'failed';
 
 export interface ApplicationMigration {
   id: string;
@@ -21,7 +20,7 @@ export interface ApplicationMigration {
   complexity: 'low' | 'medium' | 'high';
   lastUpdated: string;
   migratorUsed?: string;
-  progress?: number; // 0-100
+  progress?: number;
   issuesFound?: number;
   issuesResolved?: number;
 }
@@ -43,7 +42,7 @@ export const mockApplications: ApplicationMigration[] = [
   {
     id: 'app-1',
     name: 'coolstore',
-    description: 'Classic Java EE e-commerce application — multi-module with EJBs, JMS, and JSF',
+    description: 'Java EE e-commerce app — EJBs, JMS, JSF',
     sourceRepository: 'https://github.com/konveyor-ecosystem/coolstore',
     sourceTechnology: 'Java EE 7',
     targetTechnology: 'Quarkus 3.8',
@@ -58,7 +57,7 @@ export const mockApplications: ApplicationMigration[] = [
   {
     id: 'app-2',
     name: 'inventory-service',
-    description: 'Spring Boot inventory microservice with JPA and REST endpoints',
+    description: 'Spring Boot inventory microservice — JPA + REST',
     sourceRepository: 'https://github.com/konveyor-ecosystem/inventory-service',
     sourceTechnology: 'Spring Boot 2.7',
     targetTechnology: 'Quarkus 3.8',
@@ -71,7 +70,7 @@ export const mockApplications: ApplicationMigration[] = [
   {
     id: 'app-3',
     name: 'order-service',
-    description: 'Java EE order processing — simple REST service with CDI',
+    description: 'Java EE order processing — simple REST + CDI',
     sourceRepository: 'https://github.com/konveyor-ecosystem/order-service',
     sourceTechnology: 'Java EE 8',
     targetTechnology: 'Quarkus 3.8',
@@ -86,7 +85,7 @@ export const mockApplications: ApplicationMigration[] = [
   {
     id: 'app-4',
     name: 'payment-gateway',
-    description: 'Spring Boot payment processing service with complex transaction handling',
+    description: 'Spring Boot payment service — complex transactions',
     sourceRepository: 'https://github.com/konveyor-ecosystem/payment-gateway',
     sourceTechnology: 'Spring Boot 2.5',
     targetTechnology: 'Quarkus 3.8',
@@ -101,7 +100,7 @@ export const mockApplications: ApplicationMigration[] = [
   {
     id: 'app-5',
     name: 'notification-service',
-    description: 'Lightweight JMS-based notification dispatcher',
+    description: 'JMS-based notification dispatcher',
     sourceRepository: 'https://github.com/konveyor-ecosystem/notification-service',
     sourceTechnology: 'Java EE 7',
     targetTechnology: 'Quarkus 3.8',
@@ -117,9 +116,9 @@ export const mockMigrators: Migrator[] = [
   {
     id: 'migrator-1',
     name: 'kai-migrator',
-    description: 'AI-powered migration agent using LLM + migration skills (tackle2-addon-kai)',
+    description: 'AI-powered migration agent — LLM + migration skills (tackle2-addon-kai)',
     type: 'ai-agent',
-    supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.5', 'Spring Boot 2.7', 'Spring Boot 3.0'],
+    supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.5', 'Spring Boot 2.7'],
     supportedTargets: ['Quarkus 3.8'],
     skill: 'java-ee-to-quarkus',
     status: 'available',
@@ -129,19 +128,19 @@ export const mockMigrators: Migrator[] = [
   {
     id: 'migrator-2',
     name: 'manual-workflow',
-    description: 'Guided manual migration — generates analysis report with step-by-step refactoring instructions',
+    description: 'Guided manual migration — analysis report + step-by-step refactoring',
     type: 'manual',
     supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.5', 'Spring Boot 2.7'],
     supportedTargets: ['Quarkus 3.8'],
     skill: 'manual-migration-guide',
     status: 'available',
     successRate: 95,
-    avgDuration: '~2-4 hours (human time)',
+    avgDuration: '~2-4 hours',
   },
   {
     id: 'migrator-3',
     name: 'hybrid-assist',
-    description: 'AI does the heavy lifting, human reviews each transformation before applying',
+    description: 'AI does heavy lifting, human reviews each transformation before applying',
     type: 'hybrid',
     supportedSources: ['Java EE 7', 'Java EE 8', 'Spring Boot 2.7'],
     supportedTargets: ['Quarkus 3.8'],

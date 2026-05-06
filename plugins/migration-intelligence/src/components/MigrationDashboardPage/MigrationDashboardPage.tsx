@@ -11,9 +11,7 @@ import {
   StatusRunning,
   StatusPending,
   StatusError,
-  StatusAborted,
   InfoCard,
-  Progress,
 } from '@backstage/core-components';
 import {
   Grid,
@@ -28,9 +26,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import AssessmentIcon from '@material-ui/icons/Assessment';
 import CloudIcon from '@material-ui/icons/Cloud';
 import BuildIcon from '@material-ui/icons/Build';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 import {
   mockApplications,
@@ -47,9 +45,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-  },
-  statusChip: {
-    fontWeight: 600,
   },
   progressBar: {
     height: 8,
@@ -85,8 +80,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-/** Render migration status as a Backstage status indicator */
-function MigrationStatusIndicator({ status }: { status: MigrationStatus }) {
+function StatusIndicator({ status }: { status: MigrationStatus }) {
   switch (status) {
     case 'completed':
       return <StatusOK>Completed</StatusOK>;
@@ -96,14 +90,11 @@ function MigrationStatusIndicator({ status }: { status: MigrationStatus }) {
       return <StatusPending>Pending</StatusPending>;
     case 'failed':
       return <StatusError>Failed</StatusError>;
-    case 'cancelled':
-      return <StatusAborted>Cancelled</StatusAborted>;
     default:
       return <StatusPending>Unknown</StatusPending>;
   }
 }
 
-/** Summary stats at the top of the dashboard */
 function DashboardStats() {
   const classes = useStyles();
   const total = mockApplications.length;
@@ -113,7 +104,7 @@ function DashboardStats() {
   const failed = mockApplications.filter(a => a.status === 'failed').length;
 
   const stats = [
-    { label: 'Total Applications', value: total, icon: '📦' },
+    { label: 'Total', value: total, icon: '📦' },
     { label: 'Completed', value: completed, icon: '✅' },
     { label: 'In Progress', value: inProgress, icon: '🔄' },
     { label: 'Pending', value: pending, icon: '⏳' },
@@ -135,7 +126,6 @@ function DashboardStats() {
   );
 }
 
-/** Migrator card component */
 function MigratorCard({ migrator }: { migrator: Migrator }) {
   const classes = useStyles();
 
@@ -163,17 +153,13 @@ function MigratorCard({ migrator }: { migrator: Migrator }) {
         <Typography variant="body2" color="textSecondary" paragraph>
           {migrator.description}
         </Typography>
-        <Box display="flex" gap={1} flexWrap="wrap" mb={1}>
-          <Chip
-            label={migrator.type}
-            size="small"
-            color={statusColor[migrator.status]}
-          />
+        <Box display="flex" flexWrap="wrap" mb={1} style={{ gap: 4 }}>
+          <Chip label={migrator.type} size="small" color={statusColor[migrator.status]} />
           <Chip label={`Skill: ${migrator.skill}`} size="small" variant="outlined" />
         </Box>
         {migrator.successRate && (
           <Typography variant="caption" color="textSecondary">
-            Success rate: {migrator.successRate}% · Avg duration: {migrator.avgDuration}
+            Success rate: {migrator.successRate}% · Duration: {migrator.avgDuration}
           </Typography>
         )}
       </CardContent>
@@ -181,7 +167,6 @@ function MigratorCard({ migrator }: { migrator: Migrator }) {
         <Chip
           label={migrator.status.toUpperCase()}
           size="small"
-          className={classes.statusChip}
           color={statusColor[migrator.status]}
         />
       </CardActions>
@@ -189,7 +174,6 @@ function MigratorCard({ migrator }: { migrator: Migrator }) {
   );
 }
 
-/** Main migration dashboard page */
 export const MigrationDashboardPage = () => {
   const classes = useStyles();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -241,7 +225,7 @@ export const MigrationDashboardPage = () => {
       field: 'status',
       render: (row) => (
         <Box>
-          <MigrationStatusIndicator status={row.status} />
+          <StatusIndicator status={row.status} />
           {row.progress !== undefined && row.status === 'in-progress' && (
             <Box mt={0.5}>
               <LinearProgress
@@ -263,13 +247,11 @@ export const MigrationDashboardPage = () => {
             {row.issuesResolved}/{row.issuesFound} resolved
           </Typography>
         ) : (
-          <Typography variant="body2" color="textSecondary">
-            —
-          </Typography>
+          <Typography variant="body2" color="textSecondary">—</Typography>
         ),
     },
     {
-      title: 'Last Updated',
+      title: 'Updated',
       field: 'lastUpdated',
       render: (row) => (
         <Typography variant="body2">
@@ -307,10 +289,8 @@ export const MigrationDashboardPage = () => {
           </SupportButton>
         </ContentHeader>
 
-        {/* Stats Overview */}
         <DashboardStats />
 
-        {/* Applications Table */}
         <InfoCard title="Applications" subheader="Track migration progress across your portfolio">
           <Table
             columns={columns}
@@ -324,7 +304,6 @@ export const MigrationDashboardPage = () => {
           />
         </InfoCard>
 
-        {/* Migrators Section */}
         <Box mt={3}>
           <ContentHeader title="Available Migrators" />
           <Grid container spacing={3}>
@@ -336,7 +315,6 @@ export const MigrationDashboardPage = () => {
           </Grid>
         </Box>
 
-        {/* Start Migration Dialog */}
         <StartMigrationDialog
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}

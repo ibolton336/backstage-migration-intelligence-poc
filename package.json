@@ -1,24 +1,40 @@
 {
-  "name": "@konveyor/migration-intelligence-poc",
-  "version": "0.1.0",
+  "name": "root",
+  "version": "1.0.0",
   "private": true,
-  "description": "POC: Backstage plugin for migration intelligence",
-  "license": "Apache-2.0",
+  "engines": {
+    "node": "18 || 20"
+  },
+  "scripts": {
+    "build": "backstage-cli repo build --all",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "clean": "backstage-cli repo clean",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "export-dynamic": "rm -rf ./dynamic-plugins-root/* && npx -y @red-hat-developer-hub/cli plugin package --export-to ./dynamic-plugins-root"
+  },
   "workspaces": {
     "packages": [
+      "packages/*",
       "plugins/*"
     ]
   },
   "devDependencies": {
+    "@backstage/cli": "^0.29.3",
+    "@spotify/prettier-config": "^12.0.0",
+    "concurrently": "^8.0.0",
+    "lerna": "^7.3.0",
+    "node-gyp": "^9.0.0",
+    "prettier": "^2.3.2",
     "typescript": "~5.4.0"
   },
-  "scripts": {
-    "build": "yarn workspaces foreach -A run build",
-    "lint": "yarn workspaces foreach -A run lint",
-    "test": "yarn workspaces foreach -A run test"
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
   },
-  "packageManager": "yarn@4.1.0",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "prettier": "@spotify/prettier-config",
+  "packageManager": "yarn@4.3.1"
 }

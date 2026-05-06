@@ -2,13 +2,14 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: migration-intelligence-plugin
-  description: Backstage plugin for migration intelligence — manage and visualize application migrations
+  description: RHDH dynamic plugin for migration intelligence — manage and visualize application migrations
   annotations:
     backstage.io/techdocs-ref: dir:.
   tags:
     - backstage-plugin
+    - rhdh
     - konveyor
-    - migration
+    - dynamic-plugin
 spec:
   type: backstage-plugin
   lifecycle: experimental

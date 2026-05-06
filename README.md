@@ -1,113 +1,153 @@
-# Migration Intelligence — Backstage Plugin POC
+# Migration Intelligence — RHDH Dynamic Plugin (POC)
 
-A proof-of-concept Backstage plugin for **migration intelligence** — visualizing and managing application migrations (Java EE → Quarkus, Spring Boot → Quarkus, etc.) through the Backstage developer portal.
+A proof-of-concept **Red Hat Developer Hub** dynamic plugin for migration intelligence — visualizing and managing application migrations (Java EE → Quarkus, Spring Boot → Quarkus, etc.).
 
 Part of the [Konveyor](https://github.com/konveyor) ecosystem.
 
 ## What This Demonstrates
 
-- **Migration Dashboard** — A single-page Backstage plugin showing:
-  - Applications and their migration status
+- **RHDH Dynamic Plugin** — Built for the new frontend plugin system (`@backstage/frontend-plugin-api`) with full backward compat (`alpha.tsx` + legacy `plugin.ts`)
+- **Migration Dashboard** — Single-page plugin at `/migration-intelligence` showing:
+  - Application portfolio with migration status
   - Available migration agents ("Migrators")
-  - Ability to kick off migrations from the portal
-- **Catalog Entities** — Backstage-native catalog modeling for:
-  - Applications under migration
-  - Migrator configs (agent + skill combos)
-  - Migration target definitions
+  - Start Migration wizard (3-step dialog)
+- **Catalog Entities** — Backstage-native modeling with `konveyor.io/*` annotations
+
+## Compatible With
+
+| RHDH Version | Backstage Version |
+|---|---|
+| next / 1.10 | 1.49.4 |
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18 or 20
+- Yarn 4.x
+- Podman or Docker (for running RHDH locally)
+
+### Build
+
+```bash
+yarn install
+yarn tsc
+yarn build
+```
+
+### Export as Dynamic Plugin
+
+```bash
+# Package and export to local directory
+yarn export-dynamic
+```
+
+### Run Locally with RHDH Container
+
+```bash
+# Export the plugin first
+yarn export-dynamic
+
+# Start RHDH with the plugin mounted
+./run-rhdh.sh
+```
+
+Then visit: **http://localhost:7007/migration-intelligence**
+
+### Development (standalone)
+
+```bash
+cd plugins/migration-intelligence
+yarn start
+```
+
+## Deploying to OpenShift
+
+### 1. Package as OCI Artifact
+
+```bash
+export QUAY_USERNAME=your-username
+
+npx -y @red-hat-developer-hub/cli plugin package \
+  --tag quay.io/$QUAY_USERNAME/migration-intelligence:latest
+
+podman push quay.io/$QUAY_USERNAME/migration-intelligence:latest
+```
+
+### 2. Configure in RHDH
+
+Add to your Developer Hub ConfigMap:
+
+```yaml
+dynamicPlugins:
+  frontend:
+    konveyor.backstage-plugin-migration-intelligence:
+      appIcons:
+        - name: migrationIcon
+          importName: MigrationIcon
+      dynamicRoutes:
+        - path: /migration-intelligence
+          importName: MigrationIntelligencePage
+          menuItem:
+            text: 'Migration Intelligence'
+            icon: migrationIcon
+```
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  Backstage Frontend (this plugin)               │
+│  RHDH Frontend (this plugin)                    │
 │  ┌───────────────────────────────────────────┐  │
-│  │  Migration Dashboard Page                 │  │
-│  │  • Application table + status             │  │
-│  │  • Migrator selector                      │  │
-│  │  • Start Migration action                 │  │
+│  │  /migration-intelligence                  │  │
+│  │  • App table + status + progress          │  │
+│  │  • Migrator cards                         │  │
+│  │  • Start Migration wizard                 │  │
 │  └───────────────────────────────────────────┘  │
 ├─────────────────────────────────────────────────┤
-│  Backstage Catalog (entities)                   │
-│  • Component: applications being migrated       │
+│  Backstage Catalog (konveyor.io/* annotations)  │
+│  • Component: apps being migrated               │
 │  • Resource: migration targets                  │
 │  • API: migrator agent endpoints                │
 ├─────────────────────────────────────────────────┤
 │  Future: Backend Plugin                         │
-│  • Talks to Konveyor Hub API                    │
-│  • Creates TaskGroups for addon-kai             │
-│  • Streams migration progress                   │
+│  • Talks to Konveyor Hub /taskgroups API        │
+│  • Creates migrations via addon-kai             │
+│  • Streams progress updates                     │
 └─────────────────────────────────────────────────┘
 ```
 
-## Quick Start
+## File Structure
 
-```bash
-# Install dependencies
-yarn install
-
-# Start in development mode (standalone, no full Backstage app needed)
-cd plugins/migration-intelligence
-yarn start
 ```
-
-## Integrating into a Backstage App
-
-1. Add the plugin to your Backstage app:
-
-```bash
-cd packages/app
-yarn add @konveyor/plugin-migration-intelligence
-```
-
-2. Add the route in `App.tsx`:
-
-```tsx
-import { MigrationIntelligencePage } from '@konveyor/plugin-migration-intelligence';
-
-// In your routes:
-<Route path="/migration-intelligence" element={<MigrationIntelligencePage />} />
-```
-
-3. Add catalog entity locations in `app-config.yaml`:
-
-```yaml
-catalog:
-  locations:
-    - type: file
-      target: ../../examples/entities.yaml
-```
-
-## Catalog Entities
-
-See [`examples/entities.yaml`](./examples/entities.yaml) for sample entities:
-
-| Kind | Name | Description |
-|------|------|-------------|
-| Component | coolstore-app | Sample Java EE app being migrated |
-| Component | inventory-service | Sample Spring Boot microservice |
-| Resource | quarkus-3-target | Migration target definition |
-| API | kai-migrator | The AI migration agent endpoint |
-
-## Development
-
-```bash
-# Run tests
-yarn test
-
-# Build
-yarn build
-
-# Lint
-yarn lint
+├── app-config.yaml              # Root RHDH config (DB, auth, catalog)
+├── backstage.json               # Backstage version pin (1.49.4)
+├── run-rhdh.sh                  # Run RHDH container locally
+├── examples/
+│   └── entities.yaml            # Sample catalog entities
+├── plugins/
+│   └── migration-intelligence/
+│       ├── app-config.yaml      # Dynamic plugin frontend config
+│       ├── package.json         # RHDH-compatible deps
+│       ├── dev/index.tsx        # Standalone dev harness
+│       └── src/
+│           ├── index.ts         # Public exports
+│           ├── plugin.ts        # Legacy plugin API
+│           ├── alpha.tsx        # New frontend plugin system
+│           ├── routes.ts        # Route refs
+│           ├── icons.tsx        # MigrationIcon for nav
+│           └── components/
+│               ├── MigrationDashboardPage/
+│               └── StartMigrationDialog/
 ```
 
 ## Roadmap
 
-- [ ] Real backend plugin connecting to Konveyor Hub API
-- [ ] Live migration status via TaskGroup polling
-- [ ] Integration with `tackle2-addon-kai` for AI-powered migrations
-- [ ] Migration history and diff viewer
-- [ ] Catalog entity provider (auto-discover apps from Hub)
+- [ ] Backend plugin → Konveyor Hub API integration
+- [ ] Real-time migration status via TaskGroup polling
+- [ ] Catalog entity provider (auto-discover from Hub)
+- [ ] Migration diff viewer
+- [ ] Integration with tackle2-addon-kai
 
 ## License
 
